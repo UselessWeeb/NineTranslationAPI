@@ -20,6 +20,6 @@ namespace Models
 
         // Foreign key
         public int ProjectDetailId { get; set; }
-        public ProjectDetail ProjectDetail { get; set; }
+        public virtual ProjectDetail ProjectDetail { get; set; }
     }
 }

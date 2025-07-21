@@ -101,6 +101,11 @@ namespace Services.Services
             return MapToViewModel(projects.FirstOrDefault() ?? new Project());
         }
 
+        public async Task<IEnumerable<ProjectViewModel>> GetProjectByNameAsync(string name)
+        {
+            var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("project") && !p.By.ToLower().Equals("nine translation"));
+            return MapToViewModel(projects ?? new List<Project>() { new Project() });
+        }
 
         private ProjectViewModel MapToViewModel(Project project)
         {

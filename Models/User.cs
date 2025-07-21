@@ -12,6 +12,8 @@ namespace Models
         [DataType(DataType.DateTime)]
         public DateTime JoinDate { get; set; } = DateTime.UtcNow;
 
-        public ICollection<ProjectStaff> StaffRoles { get; set; }
+        public string ProfilePicture { get; set; } = "default-profile.png";
+
+        public virtual ICollection<ProjectStaff>? StaffRoles { get; set; }
     }
 }

@@ -13,5 +13,6 @@ namespace Services.Interfaces
         Task<IEnumerable<ProjectViewModel>> GetSortedNineListOnGoingAsync();
         Task<IEnumerable<ProjectViewModel>> GetSortedNineListPartnerAsync();
         Task<ProjectViewModel> GetProjectByFinderAsync(string finder);
+        Task<IEnumerable<ProjectViewModel>> GetProjectByNameAsync(string name);
     }
 }

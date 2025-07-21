@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Models;
+using Models.Enums;
 using System;
 
 #nullable disable

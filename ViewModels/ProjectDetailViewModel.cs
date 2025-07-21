@@ -3,7 +3,7 @@
     public class ProjectDetailViewModel
     {
         public string Publisher { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public string ReleaseDate { get; set; }
         public string Playtime { get; set; }
         public string Genre { get; set; }
         public string VndbLink { get; set; }

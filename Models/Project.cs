@@ -44,7 +44,7 @@ namespace Models
         [StringLength(20)]
         public string Type { get; set; } = "project";
         
-        public TranslationProgress? TranslationProgress { get; set; }
-        public ProjectDetail? Detail { get; set; }
+        public virtual TranslationProgress? TranslationProgress { get; set; }
+        public virtual ProjectDetail? Detail { get; set; }
     }
 }

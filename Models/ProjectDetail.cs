@@ -31,16 +31,16 @@ namespace Models
 
         // Foreign keys
         public int ProjectId { get; set; }
-        public Project Project { get; set; }
+        public virtual Project Project { get; set; }
 
-        public DownloadDetail DownloadDetail { get; set; }
-        public List<PatchUpdate> PatchHistory { get; set; }
+        public virtual DownloadDetail DownloadDetail { get; set; }
+        public virtual List<PatchUpdate> PatchHistory { get; set; }
 
         [StringLength(50)]
         public string PatchSize { get; set; }
 
         [StringLength(100)]
         public string DemoVideoUrl { get; set; }
-        public ICollection<ProjectStaff>? StaffRoles { get; set; }
+        public virtual ICollection<ProjectStaff>? StaffRoles { get; set; }
     }
 }

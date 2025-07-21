@@ -16,7 +16,7 @@ namespace ViewModels
         public string? Thumbnail { get; set; }
         public string? Status { get; set; }
         public string? ShortDescription { get; set; }
-        public DateTime Date { get; set; }
+        public string? Date { get; set; }
         public string? Link { get; set; }
         public string? Type { get; set; }
         public TranslationProgressViewModel? TranslationProgress { get; set; }

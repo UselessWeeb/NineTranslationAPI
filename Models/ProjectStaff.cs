@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
@@ -9,17 +10,7 @@ namespace Models
         public string UserId { get; set; }
         public StaffRoleType Role { get; set; }
 
-        public ProjectDetail ProjectDetail { get; set; }
-        public User User { get; set; }
-    }
-
-    public enum StaffRoleType
-    {
-        ProjectManager,
-        Translator,
-        Editor,
-        UI,
-        Tech,
-        QA
+        public virtual ProjectDetail ProjectDetail { get; set; }
+        public virtual User User { get; set; }
     }
 }

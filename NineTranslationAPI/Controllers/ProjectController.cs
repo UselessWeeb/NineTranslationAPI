@@ -3,8 +3,8 @@ using Services.Interfaces;
 
 namespace APINineTranslation.Controllers
 {
-    [Route("project")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
@@ -58,6 +58,24 @@ namespace APINineTranslation.Controllers
                 return NotFound();
             }
             return Ok(project);
+        }
+
+        [HttpGet("findProject/{name}")]
+        public async Task<IActionResult> SearchProjectByName(string name)
+        {
+            try
+            {
+                var project = await _projectService.GetProjectByNameAsync(name);
+                if (project == null)
+                {
+                    return NotFound();
+                }
+                return Ok(project);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
