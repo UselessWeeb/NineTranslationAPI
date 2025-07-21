@@ -19,11 +19,10 @@ namespace Services.Services
             _imageService = imageService;
         }
 
-        public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync(int x, int y, int z)
+        public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
         {
-            var specificIds = new List<int> { x, y, z };
             var projects = await _projectRepository.FindAsync(p =>
-                p.Type == "project" && specificIds.Contains(p.Id));
+                p.Type == "project" && p.isCarousel);
 
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
@@ -119,7 +118,7 @@ namespace Services.Services
             return _mapper.Map<IEnumerable<ProjectDto>>(projectList);
         }
 
-        public async Task CreateProject(CreateProjectDto projectDto)
+        public async Task CreateProjectAsync(CreateProjectDto projectDto)
         {
             var project = _mapper.Map<Project>(projectDto);
 
@@ -130,6 +129,25 @@ namespace Services.Services
             project.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
 
             await _projectRepository.AddAsync(project);
+        }
+
+        public async Task SetCarouselAsync(int a, int b, int c)
+        {
+            var allProjects = await _projectRepository.GetAllAsync();
+            var carouselProjects = allProjects.Where(p => p.Type == "project" && p.isCarousel).ToList();
+
+            foreach (var project in carouselProjects)
+            {
+                project.isCarousel = false;
+                await _projectRepository.UpdateAsync(project);
+            }
+
+            var newCarouselProjects = allProjects.Where(p => p.Type == "project" && (p.Id == a || p.Id == b || p.Id == c)).ToList();
+            foreach (var project in newCarouselProjects)
+            {
+                project.isCarousel = true;
+                await _projectRepository.UpdateAsync(project);
+            }
         }
     }
 }

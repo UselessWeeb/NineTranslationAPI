@@ -88,8 +88,22 @@ namespace APINineTranslation.Controllers
             }
             try
             {
-                await _projectService.CreateProject(project);
+                await _projectService.CreateProjectAsync(project);
                 return CreatedAtAction(nameof(GetProjectByFinder), new { finder = project.Finder }, project);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("setCarousel/{a},{b},{c}")]
+        public async Task<IActionResult> SetCarousel(int a, int b, int c)
+        {
+            try
+            {
+                await _projectService.SetCarouselAsync(a, b, c);
+                return Ok();
             }
             catch (Exception ex)
             {

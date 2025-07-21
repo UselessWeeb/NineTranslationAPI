@@ -43,6 +43,8 @@ namespace Models
         [Required]
         [StringLength(20)]
         public string Type { get; set; } = "project";
+
+        public bool isCarousel { get; set; } = false;
         
         public virtual TranslationProgress? TranslationProgress { get; set; }
         public virtual ProjectDetail? Detail { get; set; }

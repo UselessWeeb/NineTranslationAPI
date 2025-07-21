@@ -5,7 +5,7 @@ namespace Services.Interfaces
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync(int x, int y, int z);
+        Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync();
         Task<IEnumerable<ProjectDto>> GetSortedNineListAsync();
         Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync();
         Task<IEnumerable<ProjectDto>> GetSortedNineListPostAsync();
@@ -14,6 +14,7 @@ namespace Services.Interfaces
         Task<IEnumerable<ProjectDto>> GetSortedNineListPartnerAsync();
         Task<ProjectDto> GetProjectByFinderAsync(string finder);
         Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name);
-        Task CreateProject(CreateProjectDto project);
+        Task CreateProjectAsync(CreateProjectDto project);
+        Task SetCarouselAsync(int a, int b, int c);
     }
 }
