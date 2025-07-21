@@ -5,6 +5,6 @@ namespace Services.Interfaces
 {
     public interface IPostService
     {
-        Task<IEnumerable<ProjectViewModel>> getPostByNameAsync(string name);
+        Task<IEnumerable<ProjectDto>> getPostByNameAsync(string name);
     }
 }

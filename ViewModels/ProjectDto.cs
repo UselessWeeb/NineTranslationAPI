@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ViewModels
 {
-    public class ProjectViewModel
+    public class ProjectDto
     {
         public int Id { get; set; }
         public string Finder { get; set; }
@@ -19,7 +19,7 @@ namespace ViewModels
         public string? Date { get; set; }
         public string? Link { get; set; }
         public string? Type { get; set; }
-        public TranslationProgressViewModel? TranslationProgress { get; set; }
-        public ProjectDetailViewModel? Detail { get; set; }
+        public TranslationProgressDto? TranslationProgress { get; set; }
+        public ProjectDetailDto? Detail { get; set; }
     }
 }

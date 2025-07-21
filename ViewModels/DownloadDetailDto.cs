@@ -1,6 +1,6 @@
 ﻿namespace ViewModels
 {
-    public class DownloadDetailViewModel
+    public class DownloadDetailDto
     {
         public string PatchVersion { get; set; }
         public string OfficialLink { get; set; }

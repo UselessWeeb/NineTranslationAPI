@@ -22,15 +22,15 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> getPostByNameAsync(string name)
+        public async Task<IEnumerable<ProjectDto>> getPostByNameAsync(string name)
         {
             var posts = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("post") && !p.By.ToLower().Equals("nine translation"));
             return MapToViewModel(posts ?? new List<Project>() { new Project() });
         }
 
-        private IEnumerable<ProjectViewModel> MapToViewModel(IEnumerable<Project> projectList)
+        private IEnumerable<ProjectDto> MapToViewModel(IEnumerable<Project> projectList)
         {
-            return _mapper.Map<IEnumerable<ProjectViewModel>>(projectList);
+            return _mapper.Map<IEnumerable<ProjectDto>>(projectList);
         }
     }
 }

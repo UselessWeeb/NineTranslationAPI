@@ -8,6 +8,7 @@ namespace Models.Enums
 {
     public enum StaffRoleType
     {
+        Admin,
         ProjectManager,
         Translator,
         Editor,

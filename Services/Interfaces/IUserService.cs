@@ -9,6 +9,6 @@ namespace Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserViewModel>> GetAllStaffAsync();
+        Task<IEnumerable<UserDto>> GetAllStaffAsync();
     }
 }

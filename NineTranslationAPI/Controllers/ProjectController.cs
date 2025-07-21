@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using ViewModels;
 
 namespace APINineTranslation.Controllers
 {
@@ -71,6 +72,24 @@ namespace APINineTranslation.Controllers
                     return NotFound();
                 }
                 return Ok(project);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createProject")]
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDto project)
+        {
+            if (project == null)
+            {
+                return BadRequest("Project data is null.");
+            }
+            try
+            {
+                await _projectService.CreateProject(project);
+                return CreatedAtAction(nameof(GetProjectByFinder), new { finder = project.Finder }, project);
             }
             catch (Exception ex)
             {

@@ -14,10 +14,10 @@ namespace APINineTranslation.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet("carousel")]
-        public async Task<IActionResult> GetCarouselProjects()
+        [HttpGet("carousel/{x},{y},{z}")]
+        public async Task<IActionResult> GetCarouselProjects(int x, int y, int z)
         {
-            var projects = await _projectService.GetCarouselProjectsAsync(5, 3, 2);
+            var projects = await _projectService.GetCarouselProjectsAsync(x, y, z);
             return Ok(projects);
         }
 

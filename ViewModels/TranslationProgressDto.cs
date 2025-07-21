@@ -1,6 +1,6 @@
 ﻿namespace ViewModels
 {
-    public class TranslationProgressViewModel
+    public class TranslationProgressDto
     {
         public decimal Translate { get; set; }
         public decimal Edit { get; set; }

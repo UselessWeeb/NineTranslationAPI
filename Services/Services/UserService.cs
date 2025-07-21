@@ -20,11 +20,11 @@ namespace Services.Services
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<UserViewModel>> GetAllStaffAsync()
+        public async Task<IEnumerable<UserDto>> GetAllStaffAsync()
         {
             var users = await _userRepository.GetAllAsync();
 
-            var userViewModels = new List<UserViewModel>();
+            var userViewModels = new List<UserDto>();
 
             foreach (var user in users)
             {
@@ -38,14 +38,14 @@ namespace Services.Services
             return userViewModels;
         }
 
-        private UserViewModel MapToViewModel(User u)
+        private UserDto MapToViewModel(User u)
         {
-            return _mapper.Map<UserViewModel>(u);
+            return _mapper.Map<UserDto>(u);
         }
 
-        private IEnumerable<UserViewModel> MapToViewModel(IEnumerable<User> uList)
+        private IEnumerable<UserDto> MapToViewModel(IEnumerable<User> uList)
         {
-            return _mapper.Map<IEnumerable<UserViewModel>>(uList);
+            return _mapper.Map<IEnumerable<UserDto>>(uList);
         }
     }
 }

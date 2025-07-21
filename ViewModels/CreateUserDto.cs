@@ -1,6 +1,6 @@
 ﻿namespace ViewModels
 {
-    public class CreateUserViewModel
+    public class CreateUserDto
     {
         public string? UserName { get; set; }
         public string? Email { get; set; }

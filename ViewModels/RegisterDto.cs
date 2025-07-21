@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterDto
     {
         [Required]
         public string Username { get; set; }

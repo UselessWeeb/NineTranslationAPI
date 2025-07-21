@@ -28,7 +28,7 @@ namespace APINineTranslation.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             var user = new User
             {
@@ -48,7 +48,7 @@ namespace APINineTranslation.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))

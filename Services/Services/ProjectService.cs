@@ -10,14 +10,16 @@ namespace Services.Services
     {
         private readonly IRepository<Project> _projectRepository;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;   
 
-        public ProjectService(IRepository<Project> projectRepository, IMapper mapper)
+        public ProjectService(IRepository<Project> projectRepository, IMapper mapper, IImageService imageService)
         {
             _projectRepository = projectRepository;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetCarouselProjectsAsync(int x, int y, int z)
+        public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync(int x, int y, int z)
         {
             var specificIds = new List<int> { x, y, z };
             var projects = await _projectRepository.FindAsync(p =>
@@ -26,7 +28,7 @@ namespace Services.Services
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetSortedNineListAsync()
+        public async Task<IEnumerable<ProjectDto>> GetSortedNineListAsync()
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
@@ -36,7 +38,7 @@ namespace Services.Services
                 .ToList());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetRandomThreeProjectsAsync()
+        public async Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync()
         {
             var projects = (await _projectRepository.GetAllAsync())
                 .Where(p => p.Type == "project")
@@ -45,7 +47,7 @@ namespace Services.Services
             return GetRandomProjects(projects, 3);
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetSortedNineListPostAsync()
+        public async Task<IEnumerable<ProjectDto>> GetSortedNineListPostAsync()
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
@@ -55,7 +57,7 @@ namespace Services.Services
                 .ToList());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetSortedNineListCompletedAsync()
+        public async Task<IEnumerable<ProjectDto>> GetSortedNineListCompletedAsync()
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
@@ -65,7 +67,7 @@ namespace Services.Services
                 .ToList());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetSortedNineListOnGoingAsync()
+        public async Task<IEnumerable<ProjectDto>> GetSortedNineListOnGoingAsync()
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
@@ -75,7 +77,7 @@ namespace Services.Services
                 .ToList());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetSortedNineListPartnerAsync()
+        public async Task<IEnumerable<ProjectDto>> GetSortedNineListPartnerAsync()
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
@@ -85,7 +87,7 @@ namespace Services.Services
                 .ToList());
         }
 
-        private IEnumerable<ProjectViewModel> GetRandomProjects(List<Project> projects, int count)
+        private IEnumerable<ProjectDto> GetRandomProjects(List<Project> projects, int count)
         {
             var random = new Random();
             var projectList = projects
@@ -95,26 +97,39 @@ namespace Services.Services
             return MapToViewModel(projectList);
         }
 
-        public async Task<ProjectViewModel> GetProjectByFinderAsync(string finder)
+        public async Task<ProjectDto> GetProjectByFinderAsync(string finder)
         {
             var projects = await _projectRepository.FindAsync(p => p.Finder == finder);
             return MapToViewModel(projects.FirstOrDefault() ?? new Project());
         }
 
-        public async Task<IEnumerable<ProjectViewModel>> GetProjectByNameAsync(string name)
+        public async Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name)
         {
             var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("project") && !p.By.ToLower().Equals("nine translation"));
             return MapToViewModel(projects ?? new List<Project>() { new Project() });
         }
 
-        private ProjectViewModel MapToViewModel(Project project)
+        private ProjectDto MapToViewModel(Project project)
         {
-            return _mapper.Map<ProjectViewModel>(project);
+            return _mapper.Map<ProjectDto>(project);
         }
 
-        private IEnumerable<ProjectViewModel> MapToViewModel(IEnumerable<Project> projectList)
+        private IEnumerable<ProjectDto> MapToViewModel(IEnumerable<Project> projectList)
         {
-            return _mapper.Map<IEnumerable<ProjectViewModel>>(projectList);
+            return _mapper.Map<IEnumerable<ProjectDto>>(projectList);
+        }
+
+        public async Task CreateProject(CreateProjectDto projectDto)
+        {
+            var project = _mapper.Map<Project>(projectDto);
+
+            project.Date = DateTime.UtcNow;
+
+            var imageUrl = await _imageService.UploadImageAsync(projectDto.ThumbnailFile);
+
+            project.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
+
+            await _projectRepository.AddAsync(project);
         }
     }
 }

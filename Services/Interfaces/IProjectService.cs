@@ -5,14 +5,15 @@ namespace Services.Interfaces
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectViewModel>> GetCarouselProjectsAsync(int x, int y, int z);
-        Task<IEnumerable<ProjectViewModel>> GetSortedNineListAsync();
-        Task<IEnumerable<ProjectViewModel>> GetRandomThreeProjectsAsync();
-        Task<IEnumerable<ProjectViewModel>> GetSortedNineListPostAsync();
-        Task<IEnumerable<ProjectViewModel>> GetSortedNineListCompletedAsync();
-        Task<IEnumerable<ProjectViewModel>> GetSortedNineListOnGoingAsync();
-        Task<IEnumerable<ProjectViewModel>> GetSortedNineListPartnerAsync();
-        Task<ProjectViewModel> GetProjectByFinderAsync(string finder);
-        Task<IEnumerable<ProjectViewModel>> GetProjectByNameAsync(string name);
+        Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync(int x, int y, int z);
+        Task<IEnumerable<ProjectDto>> GetSortedNineListAsync();
+        Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync();
+        Task<IEnumerable<ProjectDto>> GetSortedNineListPostAsync();
+        Task<IEnumerable<ProjectDto>> GetSortedNineListCompletedAsync();
+        Task<IEnumerable<ProjectDto>> GetSortedNineListOnGoingAsync();
+        Task<IEnumerable<ProjectDto>> GetSortedNineListPartnerAsync();
+        Task<ProjectDto> GetProjectByFinderAsync(string finder);
+        Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name);
+        Task CreateProject(CreateProjectDto project);
     }
 }

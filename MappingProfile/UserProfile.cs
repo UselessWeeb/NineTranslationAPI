@@ -8,8 +8,7 @@ namespace MappingProfile
     {
         public UserProfile()
         {
-            CreateMap<User, UserViewModel>()
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+            CreateMap<User, UserDto>();
         }
     }
 }
