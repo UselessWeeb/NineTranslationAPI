@@ -39,8 +39,7 @@ namespace MappingProfile
             CreateMap<CreateDownloadDetailDto, DownloadDetail>();
             CreateMap<CreatePatchUpdateDto, PatchUpdate>();
 
-            CreateMap<CreatePostDto, Project>();
-            CreateMap<CreatePostDetailDto, ProjectDetail>();
+            CreateMap<UpdateProjectDto, Project>();
         }
     }
 }

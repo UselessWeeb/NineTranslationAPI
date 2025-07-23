@@ -79,7 +79,8 @@ builder.Services.AddScoped<IPatchService, PatchService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IImageService, ImageService>(); 
+builder.Services.AddScoped<IProjectStaffService, ProjectStaffService>();
 
 builder.Services.AddCors(options =>
 {

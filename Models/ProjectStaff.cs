@@ -9,7 +9,7 @@ namespace Models
         [Key]
         public int Id { get; set; }
         public int ProjectDetailId { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public StaffRoleType Role { get; set; }
 
         public virtual ProjectDetail ProjectDetail { get; set; }

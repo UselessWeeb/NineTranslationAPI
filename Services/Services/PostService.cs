@@ -25,21 +25,6 @@ namespace Services.Services
             _imageService = imageService;
         }
 
-        public async Task CreatePostAsync(CreatePostDto postDto)
-        {
-            var post = _mapper.Map<Project>(postDto);
-
-            post.Date = DateTime.UtcNow;
-
-            post.Type = "post";
-
-            var imageUrl = await _imageService.UploadImageAsync(postDto.ThumbnailFile);
-
-            post.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
-
-            await _projectRepository.AddAsync(post);
-        }
-
         public Task DeletePostAsync(int id)
         {
             var post = _projectRepository.GetByIdAsync(id);

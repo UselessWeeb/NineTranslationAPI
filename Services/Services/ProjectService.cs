@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dto;
 using Models;
 using Repositories.Interfaces;
 using Services.Interfaces;
@@ -10,13 +11,15 @@ namespace Services.Services
     {
         private readonly IRepository<Project> _projectRepository;
         private readonly IMapper _mapper;
-        private readonly IImageService _imageService;   
+        private readonly IImageService _imageService;
+        private readonly IProjectStaffService _projectStaffService;
 
-        public ProjectService(IRepository<Project> projectRepository, IMapper mapper, IImageService imageService)
+        public ProjectService(IRepository<Project> projectRepository, IMapper mapper, IImageService imageService, IProjectStaffService projectStaffService)
         {
             _projectRepository = projectRepository;
             _mapper = mapper;
             _imageService = imageService;
+            _projectStaffService = projectStaffService;
         }
 
         public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
@@ -125,9 +128,12 @@ namespace Services.Services
 
             project.Date = DateTime.UtcNow;
 
-            var imageUrl = await _imageService.UploadImageAsync(projectDto.ThumbnailFile);
+            if (projectDto.ThumbnailFile != null)
+            {
+                var imageUrl = await _imageService.UploadImageAsync(projectDto.ThumbnailFile);
 
-            project.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
+                project.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
+            }
 
             await _projectRepository.AddAsync(project);
         }
@@ -177,21 +183,53 @@ namespace Services.Services
             }
         }
 
-        public Task UpdateProjectAsync(CreateProjectDto project)
+        public async Task UpdateProjectAsync(UpdateProjectDto project)
         {
-            var existingProject = _projectRepository.FindAsync(p => p.Id == project.Id).Result.FirstOrDefault();
+            var existingProjects = await _projectRepository.FindAsync(p => p.Id == project.Id);
+            var existingProject = existingProjects.FirstOrDefault();
+
             if (existingProject == null)
             {
                 throw new KeyNotFoundException($"Project with ID '{project.Id}' not found.");
             }
-            existingProject = _mapper.Map(project, existingProject);
+
+            _mapper.Map(project, existingProject);
+
             if (project.ThumbnailFile != null)
             {
-                var imageUrl = _imageService.UploadImageAsync(project.ThumbnailFile).Result;
-                existingProject.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
+                var imageUrl = await _imageService.UploadImageAsync(project.ThumbnailFile);
+                existingProject.Thumbnail = imageUrl?.Url?.ToString() ?? "https://example.com/default-thumbnail.png";
             }
-            return _projectRepository.UpdateAsync(existingProject);
+
+            await _projectRepository.UpdateAsync(existingProject);
+
+            if (project.Detail?.StaffRoles != null)
+            {
+                // Ensure Detail is not null before accessing its properties
+                if (existingProject.Detail == null)
+                {
+                    throw new InvalidOperationException($"Project detail for project ID '{project.Id}' is null.");
+                }
+
+                var existingStaff = existingProject.Detail.StaffRoles?.ToList() ?? new List<ProjectStaff>();
+                foreach (var staff in existingStaff)
+                {
+                    await _projectStaffService.RemoveAsync(staff);
+                }
+
+                foreach (var staffDto in project.Detail.StaffRoles)
+                {
+                    var newStaff = new ProjectStaff
+                    {
+                        ProjectDetailId = existingProject.Detail.Id, // Safely access Detail.Id
+                        UserId = staffDto.UserId,
+                        Role = staffDto.Role
+                    };
+                    await _projectStaffService.AddAsync(newStaff);
+                }
+            }
         }
+
 
         public async Task DisableProjectAsync(string finder)
         {

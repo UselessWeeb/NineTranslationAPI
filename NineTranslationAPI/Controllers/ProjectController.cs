@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Interfaces;
+using System.Data.Common;
 using ViewModels;
 
 namespace APINineTranslation.Controllers
@@ -107,6 +110,10 @@ namespace APINineTranslation.Controllers
                 await _projectService.CreateProjectAsync(project);
                 return CreatedAtAction(nameof(GetProjectByFinder), new { finder = project.Finder }, project);
             }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Duplication finder.");
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
@@ -114,7 +121,7 @@ namespace APINineTranslation.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateProject([FromForm] CreateProjectDto project)
+        public async Task<IActionResult> UpdateProject([FromForm] UpdateProjectDto project)
         {
             if (project == null)
             {
@@ -159,7 +166,7 @@ namespace APINineTranslation.Controllers
         //    }
         //}
 
-        [HttpPost("disableProject/{finder}")]
+        [HttpDelete("disableProject/{finder}")]
         public async Task<IActionResult> DisableProject(string finder)
         {
             try

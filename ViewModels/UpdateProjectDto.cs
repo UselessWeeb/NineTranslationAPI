@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ViewModels;
 
-namespace ViewModels
+namespace Dto
 {
-    public class CreateProjectDto
+    public class UpdateProjectDto
     {
+        public int Id { get; set; }
         public string? Finder { get; set; }
         public string? Heading { get; set; }
         public string? By { get; set; }
