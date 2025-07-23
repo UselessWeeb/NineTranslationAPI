@@ -23,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(typeof(TransactionProfile));
 builder.Services.AddAutoMapper(typeof(ProjectProfile));
 builder.Services.AddAutoMapper(typeof(UserProfile));
 
@@ -71,6 +72,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPatchService, PatchService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -90,6 +95,14 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<ProjectStaffToViewModelConverter>();
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.Configure<VnPaySettings>(
+    builder.Configuration.GetSection("VnPaySettings")
+);
+
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
 
 var app = builder.Build();
 

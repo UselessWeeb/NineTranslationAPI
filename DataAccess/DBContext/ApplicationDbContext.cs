@@ -15,6 +15,7 @@ namespace DataAccess.DBContext
         public DbSet<PatchUpdate> PatchUpdates { get; set; }
         public DbSet<DownloadDetail> DownloadDetails { get; set; }
         public DbSet<ProjectStaff> ProjectStaff { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

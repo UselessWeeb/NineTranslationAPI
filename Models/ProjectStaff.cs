@@ -1,10 +1,12 @@
 ﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
     public class ProjectStaff
     {
+        [Key]
         public int Id { get; set; }
         public int ProjectDetailId { get; set; }
         public string UserId { get; set; }

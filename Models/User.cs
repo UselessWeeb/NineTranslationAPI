@@ -15,5 +15,7 @@ namespace Models
         public string ProfilePicture { get; set; } = "default-profile.png";
 
         public virtual ICollection<ProjectStaff>? StaffRoles { get; set; }
+
+        public bool isActive { get; set; } = true;
     }
 }

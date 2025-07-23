@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Dto;
 using Models;
-using ViewModels;
 using System.Globalization;
 using Utils;
+using ViewModels;
 
 namespace MappingProfile
 {
@@ -17,8 +18,6 @@ namespace MappingProfile
                 .ForMember(dest => dest.TranslationProgress, opt => opt.MapFrom(src => src.TranslationProgress))
                 .ForMember(dest => dest.Detail, opt => opt.MapFrom(src => src.Detail));
 
-            CreateMap<Project, CreateProjectDto>();
-
             CreateMap<TranslationProgress, TranslationProgressDto>()
                 .ForMember(dest => dest.LastUpdated, otp => otp.MapFrom(src => src.LastUpdated.ToString("dddd, dd/MM/yyyy", vietnameseCulture)));
 
@@ -32,6 +31,16 @@ namespace MappingProfile
             CreateMap<DownloadDetail, DownloadDetailDto>();
             CreateMap<PatchUpdate, PatchUpdateDto>()
                 .ForMember(dest => dest.ReleaseDate, otp => otp.MapFrom(src => src.ReleaseDate.ToString("dddd, dd/MM/yyyy", vietnameseCulture)));
+
+            CreateMap<CreateProjectDto, Project>();
+            CreateMap<CreateTranslationProgressDto, TranslationProgress>();
+            CreateMap<CreateProjectDetailDto, ProjectDetail>();
+            CreateMap<CreateProjectStaffDto, ProjectStaff>();
+            CreateMap<CreateDownloadDetailDto, DownloadDetail>();
+            CreateMap<CreatePatchUpdateDto, PatchUpdate>();
+
+            CreateMap<CreatePostDto, Project>();
+            CreateMap<CreatePostDetailDto, ProjectDetail>();
         }
     }
 }

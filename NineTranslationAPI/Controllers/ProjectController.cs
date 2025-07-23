@@ -79,9 +79,25 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [HttpPost("createProject")]
-        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDto project)
+        [HttpGet("setCarousel/{a},{b},{c}")]
+        public async Task<IActionResult> SetCarousel(int a, int b, int c)
         {
+            try
+            {
+                await _projectService.SetCarouselAsync(a, b, c);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createProject")]
+        public async Task<IActionResult> CreateProject([FromForm] CreateProjectDto project)
+        {
+            HttpClient client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(60);
             if (project == null)
             {
                 return BadRequest("Project data is null.");
@@ -97,12 +113,58 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [HttpGet("setCarousel/{a},{b},{c}")]
-        public async Task<IActionResult> SetCarousel(int a, int b, int c)
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateProject([FromForm] CreateProjectDto project)
+        {
+            if (project == null)
+            {
+                return BadRequest("Project data is null.");
+            }
+            try
+            {
+                await _projectService.UpdateProjectAsync(project);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //[HttpDelete("deleteProject/{finder}")]
+        //public async Task<IActionResult> DeleteProjectByFinder(string finder)
+        //{
+        //    try
+        //    {
+        //        await _projectService.DeleteProjectByFinderAsync(finder);
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpDelete("deleteProjectById/{id}")]
+        //public async Task<IActionResult> DeleteProjectById(int id)
+        //{
+        //    try
+        //    {
+        //        await _projectService.DeleteProjectById(id);
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        [HttpPost("disableProject/{finder}")]
+        public async Task<IActionResult> DisableProject(string finder)
         {
             try
             {
-                await _projectService.SetCarouselAsync(a, b, c);
+                await _projectService.DisableProjectAsync(finder);
                 return Ok();
             }
             catch (Exception ex)

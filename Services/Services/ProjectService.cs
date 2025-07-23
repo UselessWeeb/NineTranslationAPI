@@ -22,7 +22,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
         {
             var projects = await _projectRepository.FindAsync(p =>
-                p.Type == "project" && p.isCarousel);
+                p.Type == "project" && p.isCarousel && p.isActive);
 
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
@@ -31,7 +31,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Type == "project")
+                .Where(p => p.Type == "project" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -40,7 +40,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync()
         {
             var projects = (await _projectRepository.GetAllAsync())
-                .Where(p => p.Type == "project")
+                .Where(p => p.Type == "project" && p.isActive)
                 .ToList();
 
             return GetRandomProjects(projects, 3);
@@ -50,7 +50,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Type == "post")
+                .Where(p => p.Type == "post" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -60,7 +60,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Status == "Completed")
+                .Where(p => p.Status == "Completed" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -70,7 +70,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Status == "On-Going")
+                .Where(p => p.Status == "On-Going" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -80,7 +80,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.By != "Nine Translation" && !string.IsNullOrEmpty(p.Status))
+                .Where(p => p.By != "Nine Translation" && !string.IsNullOrEmpty(p.Status) && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -90,6 +90,7 @@ namespace Services.Services
         {
             var random = new Random();
             var projectList = projects
+                .Where(p => p.isActive)
                 .OrderBy(x => random.Next())
                 .Take(count);
 
@@ -98,13 +99,13 @@ namespace Services.Services
 
         public async Task<ProjectDto> GetProjectByFinderAsync(string finder)
         {
-            var projects = await _projectRepository.FindAsync(p => p.Finder == finder);
+            var projects = await _projectRepository.FindAsync(p => p.Finder == finder && p.isActive);
             return MapToViewModel(projects.FirstOrDefault() ?? new Project());
         }
 
         public async Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name)
         {
-            var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("project") && !p.By.ToLower().Equals("nine translation"));
+            var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("project") && !p.By.ToLower().Equals("nine translation") && p.isActive);
             return MapToViewModel(projects ?? new List<Project>() { new Project() });
         }
 
@@ -148,6 +149,62 @@ namespace Services.Services
                 project.isCarousel = true;
                 await _projectRepository.UpdateAsync(project);
             }
+        }
+
+        public Task DeleteProjectByFinderAsync(string finder)
+        {
+            var project = _projectRepository.FindAsync(p => p.Finder == finder).Result.FirstOrDefault();
+            if (project != null)
+            {
+                return _projectRepository.RemoveAsync(project);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Project with finder '{finder}' not found.");
+            }
+        }
+
+        public Task DeleteProjectById(int id)
+        {
+            var project = _projectRepository.FindAsync(p => p.Id == id).Result.FirstOrDefault();
+            if (project != null)
+            {
+                return _projectRepository.RemoveAsync(project);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Project with ID '{id}' not found.");
+            }
+        }
+
+        public Task UpdateProjectAsync(CreateProjectDto project)
+        {
+            var existingProject = _projectRepository.FindAsync(p => p.Id == project.Id).Result.FirstOrDefault();
+            if (existingProject == null)
+            {
+                throw new KeyNotFoundException($"Project with ID '{project.Id}' not found.");
+            }
+            existingProject = _mapper.Map(project, existingProject);
+            if (project.ThumbnailFile != null)
+            {
+                var imageUrl = _imageService.UploadImageAsync(project.ThumbnailFile).Result;
+                existingProject.Thumbnail = imageUrl != null ? imageUrl.Url.ToString() : "https://example.com/default-thumbnail.png";
+            }
+            return _projectRepository.UpdateAsync(existingProject);
+        }
+
+        public async Task DisableProjectAsync(string finder)
+        {
+            var projectList = await _projectRepository.FindAsync(p => p.Finder == finder);
+            var project = projectList.FirstOrDefault();
+
+            if (project == null)
+            {
+                throw new KeyNotFoundException($"Project with finder '{finder}' not found.");
+            }
+
+            project.isActive = !project.isActive;
+            await _projectRepository.UpdateAsync(project);
         }
     }
 }

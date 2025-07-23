@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ViewModels;
 
-namespace ViewModels
+namespace Dto
 {
-    public class CreateProjectDto
+    public class CreatePostDto
     {
-        public int Id { get; set; }
         public string Finder { get; set; }
         public string Heading { get; set; }
         public string By { get; set; }
@@ -13,9 +18,7 @@ namespace ViewModels
         public string ShortDescription { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string Link { get; set; }
-        public string Type { get; set; } = "project";
-        public bool IsCarousel { get; set; } = false;
-        public CreateTranslationProgressDto? TranslationProgress { get; set; }
-        public CreateProjectDetailDto? Detail { get; set; }
+        public string Type { get; set; } = "post";
+        public CreatePostDetailDto? Detail { get; set; }
     }
 }

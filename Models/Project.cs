@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
+    [Index(nameof(Finder), IsUnique = true)]
     public class Project
     {
         [Key]
@@ -45,6 +46,8 @@ namespace Models
         public string Type { get; set; } = "project";
 
         public bool isCarousel { get; set; } = false;
+
+        public bool isActive { get; set; } = true;
         
         public virtual TranslationProgress? TranslationProgress { get; set; }
         public virtual ProjectDetail? Detail { get; set; }

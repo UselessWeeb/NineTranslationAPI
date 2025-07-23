@@ -9,6 +9,8 @@ namespace MappingProfile
         public UserProfile()
         {
             CreateMap<User, UserDto>();
+
+            CreateMap<CreateUserDto, User>();
         }
     }
 }
