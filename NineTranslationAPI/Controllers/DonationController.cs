@@ -21,7 +21,7 @@ namespace APINineTranslation.Controllers
         }
 
         [HttpGet("donate")]
-        public async Task<IActionResult> DonateAsync([FromQuery] string userEmail, [FromQuery] decimal amount)
+        public async Task<IActionResult> DonateAsync([FromQuery] string userEmail, [FromQuery] string description, [FromQuery] decimal amount)
         {
             if (string.IsNullOrEmpty(userEmail) || amount <= 0)
                 return BadRequest("Invalid user ID or amount.");
@@ -30,7 +30,7 @@ namespace APINineTranslation.Controllers
             {
                 Amount = amount,
                 UserEmail = userEmail,
-                Description = $"Donation from user {userEmail}",
+                Description = description,
                 TransactionDate = DateTime.UtcNow,
             };
 

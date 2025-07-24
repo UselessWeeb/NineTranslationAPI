@@ -7,29 +7,28 @@ namespace Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         [StringLength(20)]
-        public string PatchVersion { get; set; }
+        public string? PatchVersion { get; set; }
 
         [Url]
         [StringLength(255)]
-        public string OfficialLink { get; set; }
+        public string? OfficialLink { get; set; }
 
         [Url]
         [StringLength(255)]
-        public string Download1 { get; set; }
+        public string? Download1 { get; set; }
 
         [Url]
         [StringLength(255)]
-        public string Download2 { get; set; }
+        public string? Download2 { get; set; }
 
         [Url]
         [StringLength(255)]
-        public string Download3 { get; set; }
+        public string? Download3 { get; set; }
 
         [Url]
         [StringLength(255)]
-        public string TutorialVideoLink { get; set; }
+        public string? TutorialVideoLink { get; set; }
 
         // Foreign key
         public int ProjectDetailId { get; set; }

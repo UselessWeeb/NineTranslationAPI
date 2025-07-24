@@ -108,11 +108,11 @@ namespace APINineTranslation.Controllers
             try
             {
                 await _projectService.CreateProjectAsync(project);
-                return CreatedAtAction(nameof(GetProjectByFinder), new { finder = project.Finder }, project);
+                return Ok();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException dbEx)
             {
-                return BadRequest("Duplication finder.");
+                return BadRequest($"Duplication finder.{dbEx.Message}");
             }
             catch (Exception ex)
             {
