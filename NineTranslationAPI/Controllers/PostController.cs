@@ -26,12 +26,5 @@ namespace APINineTranslation.Controllers
             }
             return Ok(post);
         }
-
-        [HttpGet("getAllPosts")]
-        public async Task<IActionResult> GetAllPostsAsync()
-        {
-            var posts = await _postService.GetAllPostsAsync();
-            return Ok(posts);
-        }
     }
 }

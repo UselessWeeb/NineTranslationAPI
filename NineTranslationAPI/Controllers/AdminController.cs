@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services.Interfaces;
+using Services.Services;
 using System.Reflection.Metadata.Ecma335;
 using ViewModels;
 
 namespace APINineTranslation.Controllers
 {
-    public class UserController : Controller
+    public class AdminController : Controller
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -16,13 +17,17 @@ namespace APINineTranslation.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IProjectService _projectService;
+        private readonly IPostService _postService;
 
-        public UserController(
+        public AdminController(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserService userService,
             IConfiguration config,
+            IProjectService projectService,
+            IPostService postService,
             IMapper mapper)
         {
             _signInManager = signInManager;
@@ -30,6 +35,8 @@ namespace APINineTranslation.Controllers
             _roleManager = roleManager;
             _userService = userService;
             _config = config;
+            _projectService = projectService;
+            _postService = postService;
             _mapper = mapper;
         }
 
@@ -74,6 +81,34 @@ namespace APINineTranslation.Controllers
                 return Ok("User disabled successfully.");
             }
             return BadRequest(result.Errors);
+        }
+
+        [HttpGet("getAllProject")]
+        public async Task<IActionResult> GetAllProjects()
+        {
+            try
+            {
+                var projects = await _projectService.GetAllProjectsAsync();
+                return Ok(projects);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getAllPosts")]
+        public async Task<IActionResult> GetAllPostsAsync()
+        {
+            try
+            {
+                var posts = await _postService.GetAllPostsAsync();
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
