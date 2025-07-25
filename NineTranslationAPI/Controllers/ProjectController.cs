@@ -82,12 +82,12 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [HttpGet("setCarousel/{a},{b},{c}")]
-        public async Task<IActionResult> SetCarousel(int a, int b, int c)
+        [HttpGet("setCarousel/{a}")]
+        public async Task<IActionResult> SetCarousel(int a)
         {
             try
             {
-                await _projectService.SetCarouselAsync(a, b, c);
+                await _projectService.SetCarouselAsync(a);
                 return Ok();
             }
             catch (Exception ex)

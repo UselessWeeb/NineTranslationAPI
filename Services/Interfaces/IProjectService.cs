@@ -16,7 +16,7 @@ namespace Services.Interfaces
         Task<ProjectDto> GetProjectByFinderAsync(string finder);
         Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name);
         Task<int> CreateProjectAsync(CreateProjectDto project);
-        Task SetCarouselAsync(int a, int b, int c);
+        Task SetCarouselAsync(int newCarouselProjectId);
         Task<int> UpdateProjectAsync(UpdateProjectDto project);
         Task DeleteProjectById(int id);
         Task DeleteProjectByFinderAsync(string finder);

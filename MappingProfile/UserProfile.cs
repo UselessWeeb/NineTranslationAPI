@@ -8,7 +8,7 @@ namespace MappingProfile
     {
         public UserProfile()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>().ForMember(e => e.Email, opt => opt.MapFrom(src => src.Email));
 
             CreateMap<CreateUserDto, User>();
         }

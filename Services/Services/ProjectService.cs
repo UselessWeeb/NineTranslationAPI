@@ -25,7 +25,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
         {
             var projects = await _projectRepository.FindAsync(p =>
-                p.Type == "project" || p.Type == "partner" && p.isCarousel && p.isActive);
+                (p.Type == "project" || p.Type == "partner") && p.isCarousel && p.isActive);
 
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
@@ -34,7 +34,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Type == "project" || p.Type == "partner" && p.isActive)
+                .Where(p => (p.Type == "project" || p.Type == "partner") && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -43,7 +43,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync()
         {
             var projects = (await _projectRepository.GetAllAsync())
-                .Where(p => p.Type == "project" || p.Type == "partner" && p.isActive)
+                .Where(p => (p.Type == "project" || p.Type == "partner" || p.Type == "post") && p.isActive)
                 .ToList();
 
             return GetRandomProjects(projects, 3);
@@ -93,7 +93,7 @@ namespace Services.Services
         {
             var random = new Random();
             var projectList = projects
-                .Where(p => p.isActive && (p.Type == "post" || p.Type == "partner"))
+                .Where(p => p.isActive && (p.Type == "project" || p.Type == "partner"))
                 .OrderBy(x => random.Next())
                 .Take(count);
 
@@ -139,23 +139,35 @@ namespace Services.Services
             return project.Detail.Id;
         }
 
-        public async Task SetCarouselAsync(int a, int b, int c)
+        public async Task SetCarouselAsync(int newCarouselProjectId)
         {
             var allProjects = await _projectRepository.GetAllAsync();
-            var carouselProjects = allProjects.Where(p => p.Type == "project" && p.isCarousel).ToList();
+            var carouselProjects = allProjects
+                .Where(p => p.Type == "project" && p.isCarousel)
+                .OrderBy(p => p.Date)
+                .ToList();
 
-            foreach (var project in carouselProjects)
+            bool isAlreadyCarousel = carouselProjects.Any(p => p.Id == newCarouselProjectId);
+            if (isAlreadyCarousel)
             {
-                project.isCarousel = false;
-                await _projectRepository.UpdateAsync(project);
+                return;
             }
 
-            var newCarouselProjects = allProjects.Where(p => p.Type == "project" && (p.Id == a || p.Id == b || p.Id == c)).ToList();
-            foreach (var project in newCarouselProjects)
+            if (carouselProjects.Count >= 3)
             {
-                project.isCarousel = true;
-                await _projectRepository.UpdateAsync(project);
+                var oldestCarousel = carouselProjects.First();
+                oldestCarousel.isCarousel = false;
+                await _projectRepository.UpdateAsync(oldestCarousel);
             }
+
+            var newCarouselProject = allProjects.FirstOrDefault(p => p.Id == newCarouselProjectId);
+            if (newCarouselProject == null)
+            {
+                throw new KeyNotFoundException($"Project with ID {newCarouselProjectId} not found.");
+            }
+
+            newCarouselProject.isCarousel = true;
+            await _projectRepository.UpdateAsync(newCarouselProject);
         }
 
         public Task DeleteProjectByFinderAsync(string finder)
