@@ -244,5 +244,17 @@ namespace Services.Services
             project.isActive = !project.isActive;
             await _projectRepository.UpdateAsync(project);
         }
+
+        public Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
+        {
+            var projects = _projectRepository.GetAllAsync().Result
+                .Where(p => p.Type == "project")
+                .ToList();
+            if (projects == null || !projects.Any())
+            {
+                throw new KeyNotFoundException("No projects found.");
+            }
+            return Task.FromResult(MapToViewModel(projects));
+        }
     }
 }

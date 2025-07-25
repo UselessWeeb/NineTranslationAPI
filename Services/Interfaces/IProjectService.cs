@@ -21,5 +21,6 @@ namespace Services.Interfaces
         Task DeleteProjectById(int id);
         Task DeleteProjectByFinderAsync(string finder);
         Task DisableProjectAsync(string finder);
+        Task<IEnumerable<ProjectDto>> GetAllProjectsAsync();
     }
 }

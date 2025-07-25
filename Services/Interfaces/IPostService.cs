@@ -10,5 +10,6 @@ namespace Services.Interfaces
         Task DeletePostAsync(int id);
         Task DeletePostASync(string finder);
         Task DisablePost(string finder);
+        Task<IEnumerable<ProjectDto>> GetAllPostsAsync();
     }
 }

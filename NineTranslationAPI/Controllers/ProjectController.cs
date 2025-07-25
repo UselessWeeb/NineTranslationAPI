@@ -179,5 +179,19 @@ namespace APINineTranslation.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("getAllProject")]
+        public async Task<IActionResult> GetAllProjects()
+        {
+            try
+            {
+                var projects = await _projectService.GetAllProjectsAsync();
+                return Ok(projects);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

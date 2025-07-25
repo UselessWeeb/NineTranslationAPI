@@ -35,25 +35,31 @@ namespace Services.Services
             return _projectRepository.RemoveAsync(post.Result);
         }
 
-        public Task DeletePostASync(string finder)
+        public async Task DeletePostASync(string finder)
         {
             var post = _projectRepository.FindAsync(p => p.Finder.Equals(finder)).Result.FirstOrDefault();
             if (post == null)
             {
                 throw new KeyNotFoundException($"Post with finder {finder} not found.");
             }
-            return _projectRepository.RemoveAsync(post);
+            await _projectRepository.RemoveAsync(post);
         }
 
-        public Task DisablePost(string finder)
+        public async Task DisablePost(string finder)
         {
             var post = _projectRepository.FindAsync(p => p.Finder.Equals(finder)).Result.FirstOrDefault();
             if (post == null)
             {
                 throw new KeyNotFoundException($"Post with finder {finder} not found.");
             }
-            post.isActive = !post.isActive;
-            return _projectRepository.UpdateAsync(post);
+            post.isActive = false;
+            await _projectRepository.UpdateAsync(post);
+        }
+
+        public async Task<IEnumerable<ProjectDto>> GetAllPostsAsync()
+        {
+            var posts = await _projectRepository.FindAsync(p => p.Type.Equals("post"));
+            return MapToViewModel(posts ?? new List<Project>() { new Project() });
         }
 
         public async Task<IEnumerable<ProjectDto>> getPostByNameAsync(string name)

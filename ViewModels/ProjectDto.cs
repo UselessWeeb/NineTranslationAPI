@@ -19,6 +19,8 @@ namespace ViewModels
         public string? Date { get; set; }
         public string? Link { get; set; }
         public string? Type { get; set; }
+        public bool isCarousel { get; set; } = false;
+        public bool isActive { get; set; } = true;
         public TranslationProgressDto? TranslationProgress { get; set; }
         public ProjectDetailDto? Detail { get; set; }
     }
