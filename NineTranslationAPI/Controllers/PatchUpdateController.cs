@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dto;
+using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using ViewModels;
 
@@ -16,7 +17,7 @@ namespace APINineTranslation.Controllers
         }
 
         [HttpPost("createPatchUpdate")]
-        public async Task<IActionResult> CreatePatchUpdateAsync([FromBody] CreatePatchUpdateDto patchDto)
+        public async Task<IActionResult> CreatePatchUpdateAsync([FromBody] IEnumerable<CreatePatchUpdateDto> patchDto)
         {
             try
             {
@@ -24,7 +25,25 @@ namespace APINineTranslation.Controllers
                 {
                     return BadRequest("Patch update data is null.");
                 }
-                await _patchService.AddPatchAsync(patchDto);
+                await _patchService.AddPatchListAsync(patchDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("upsertPatchUpdate/{projectDetailId}")]
+        public async Task<IActionResult> SmartUpdatePatchAsync(int projectDetailId, [FromBody] IEnumerable<UpdatePatchUpdateDto> patchUpdates)
+        {
+            try
+            {
+                if (patchUpdates == null || !patchUpdates.Any())
+                {
+                    return BadRequest("Patch updates cannot be null or empty.");
+                }
+                await _patchService.SmartUpdatePatchAsync(projectDetailId, patchUpdates);
                 return Ok();
             }
             catch (Exception ex)

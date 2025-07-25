@@ -74,11 +74,11 @@ namespace APINineTranslation.Controllers
             {
                 return NotFound("User not found.");
             }
-            user.isActive = false;
+            user.isActive = !(user.isActive);
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return Ok("User disabled successfully.");
+                return Ok($"User {(user.isActive ? "enabled" : "disabled")} successfully.");
             }
             return BadRequest(result.Errors);
         }

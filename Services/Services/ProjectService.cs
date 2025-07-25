@@ -25,7 +25,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
         {
             var projects = await _projectRepository.FindAsync(p =>
-                p.Type == "project" && p.isCarousel && p.isActive);
+                p.Type == "project" || p.Type == "partner" && p.isCarousel && p.isActive);
 
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
@@ -34,7 +34,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.Type == "project" && p.isActive)
+                .Where(p => p.Type == "project" || p.Type == "partner" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -43,7 +43,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync()
         {
             var projects = (await _projectRepository.GetAllAsync())
-                .Where(p => p.Type == "project" && p.isActive)
+                .Where(p => p.Type == "project" || p.Type == "partner" && p.isActive)
                 .ToList();
 
             return GetRandomProjects(projects, 3);
@@ -93,7 +93,7 @@ namespace Services.Services
         {
             var random = new Random();
             var projectList = projects
-                .Where(p => p.isActive)
+                .Where(p => p.isActive && (p.Type == "post" || p.Type == "partner"))
                 .OrderBy(x => random.Next())
                 .Take(count);
 
@@ -108,7 +108,7 @@ namespace Services.Services
 
         public async Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name)
         {
-            var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && p.Type.Equals("project") && !p.By.ToLower().Equals("nine translation") && p.isActive);
+            var projects = await _projectRepository.FindAsync(p => p.Heading.Contains(name) && (p.Type.Equals("project") || p.Type.Equals("partner")) && !p.By.ToLower().Equals("nine translation") && p.isActive);
             return MapToViewModel(projects ?? new List<Project>() { new Project() });
         }
 
@@ -202,32 +202,6 @@ namespace Services.Services
             }
 
             await _projectRepository.UpdateAsync(existingProject);
-
-            if (project.Detail?.StaffRoles != null)
-            {
-                // Ensure Detail is not null before accessing its properties
-                if (existingProject.Detail == null)
-                {
-                    throw new InvalidOperationException($"Project detail for project ID '{project.Id}' is null.");
-                }
-
-                var existingStaff = existingProject.Detail.StaffRoles?.ToList() ?? new List<ProjectStaff>();
-                foreach (var staff in existingStaff)
-                {
-                    await _projectStaffService.RemoveAsync(staff);
-                }
-
-                foreach (var staffDto in project.Detail.StaffRoles)
-                {
-                    var newStaff = new ProjectStaff
-                    {
-                        ProjectDetailId = existingProject.Detail.Id, // Safely access Detail.Id
-                        UserId = staffDto.UserId,
-                        Role = staffDto.Role
-                    };
-                    await _projectStaffService.AddAsync(newStaff);
-                }
-            }
         }
 
 

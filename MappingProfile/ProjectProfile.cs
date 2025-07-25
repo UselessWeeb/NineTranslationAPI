@@ -40,6 +40,8 @@ namespace MappingProfile
             CreateMap<CreatePatchUpdateDto, PatchUpdate>();
 
             CreateMap<UpdateProjectDto, Project>();
+            CreateMap<UpdatePatchUpdateDto, PatchUpdate>();
+            CreateMap<UpdateProjectStaffDto, ProjectStaff>();
         }
     }
 }

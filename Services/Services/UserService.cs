@@ -58,7 +58,7 @@ namespace Services.Services
 
         public async Task<IEnumerable<UserDto>> GetAllStaffAsync()
         {
-            var users = await _userRepository.FindAsync(u => u.isActive);
+            var users = await _userRepository.GetAllAsync();
 
             var userViewModels = new List<UserDto>();
 

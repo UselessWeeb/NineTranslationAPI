@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Services.Interfaces
 {
     public interface IPatchService
     {
-        Task AddPatchAsync(CreatePatchUpdateDto patchUpdateDto);
+        Task AddPatchListAsync(IEnumerable<CreatePatchUpdateDto> patchUpdateDto);
+        Task SmartUpdatePatchAsync(int projectDetailId, IEnumerable<UpdatePatchUpdateDto> patchUpdates);
     }
 }
