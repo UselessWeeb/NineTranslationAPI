@@ -1,4 +1,5 @@
 ﻿using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Interfaces;
@@ -82,6 +83,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("setCarousel/{a}")]
         public async Task<IActionResult> SetCarousel(int a)
         {
@@ -96,6 +98,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("createProject")]
         public async Task<IActionResult> CreateProject([FromForm] CreateProjectDto project)
         {
@@ -120,6 +123,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateProject([FromForm] UpdateProjectDto project)
         {
@@ -166,6 +170,7 @@ namespace APINineTranslation.Controllers
         //    }
         //}
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("disableProject/{finder}")]
         public async Task<IActionResult> DisableProject(string finder)
         {

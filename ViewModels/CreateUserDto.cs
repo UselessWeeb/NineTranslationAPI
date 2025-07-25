@@ -10,7 +10,5 @@ namespace ViewModels
         public string? Password { get; set; }
         public string? DisplayName { get; set; }
         public DateTime JoinDate { get; set; } = DateTime.UtcNow;
-        public IFormFile? ProfilePictureFile { get; set; }
-        public StaffRoleType Role { get; set; } = StaffRoleType.Tech;
     }
 }

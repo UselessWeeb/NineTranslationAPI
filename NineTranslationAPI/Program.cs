@@ -1,6 +1,7 @@
 using CloudinaryDotNet;
 using DataAccess.DBContext;
 using DataAccess.Repositories;
+using DataAccess.Seeders;
 using MappingProfile;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
@@ -108,6 +109,15 @@ builder.Services.Configure<EmailSettings>(
 var app = builder.Build();
 
 app.UseCors("AllowReactApp");
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await AdminSeeder.SeedAdminAsync(userManager, roleManager);
+}
 
 if (app.Environment.IsDevelopment())
 {

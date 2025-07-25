@@ -27,51 +27,35 @@ namespace Services.Services
         public async Task<IdentityResult> CreateUserAsync(CreateUserDto model)
         {
             var user = _mapper.Map<User>(model);
-
-            if (!string.IsNullOrWhiteSpace(model.Role.ToString()))
             {
-                if (model.ProfilePictureFile != null)
-                {
-                    var profileImageUrl = await _imageService.UploadImageAsync(model.ProfilePictureFile);
-                    user.ProfilePicture = profileImageUrl != null ? profileImageUrl.Url.ToString() : "https://example.com/default-profile.png";
-                }
-                else
-                {
-                    user.ProfilePicture = "https://example.com/default-profile.png";
-                }
-
-                if (!await _roleManager.RoleExistsAsync(model.Role.ToString()))
-                {
-                    return IdentityResult.Failed(new IdentityError { Description = "Invalid role" });
-                }
-
-                var result = await _userManager.CreateAsync(user, model.Password!);
-                if (!result.Succeeded)
-                    return result;
-
-                var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
-                return roleResult;
+                user.ProfilePicture = "https://example.com/default-profile.png";
             }
 
-            return IdentityResult.Failed(new IdentityError { Description = "Role is required" });
+            var result = await _userManager.CreateAsync(user, model.Password!);
+            if (!result.Succeeded)
+                return result;
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Staff");
+            return roleResult;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllStaffAsync()
         {
             var users = await _userRepository.GetAllAsync();
-
-            var userViewModels = new List<UserDto>();
+            var staffUsers = new List<UserDto>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                var viewModel = MapToViewModel(user);
-
-                userViewModels.Add(viewModel);
+                if (roles.Contains("Staff"))
+                {
+                    var viewModel = MapToViewModel(user);
+                    staffUsers.Add(viewModel);
+                }
             }
 
-            return userViewModels;
+            return staffUsers;
         }
 
         private UserDto MapToViewModel(User u)

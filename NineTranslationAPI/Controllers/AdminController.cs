@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -42,7 +43,7 @@ namespace APINineTranslation.Controllers
             _mapper = mapper;
         }
 
-        //[Authorize(Roles = "ProjectManager")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getStaff")]
         public async Task<IActionResult> GetAllStaff()
         {
@@ -57,6 +58,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("addAccount")]
         public async Task<IActionResult> AddAccount([FromForm] CreateUserDto model)
         {
@@ -68,6 +70,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("disableUser")]
         public async Task<IActionResult> DisableUser([FromBody] string userId)
         {
@@ -85,6 +88,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getAllProject")]
         public async Task<IActionResult> GetAllProjects()
         {
@@ -99,6 +103,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getAllPosts")]
         public async Task<IActionResult> GetAllPostsAsync()
         {

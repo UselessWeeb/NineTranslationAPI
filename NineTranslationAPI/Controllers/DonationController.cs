@@ -1,4 +1,5 @@
 ﻿using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Enums;
 using Services.Interfaces;
@@ -87,6 +88,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTransactionGraph/{month}")]
         public async Task<IActionResult> GetTransactionGraph(int month)
         {
@@ -98,6 +100,7 @@ namespace APINineTranslation.Controllers
             return Ok(transactions);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTransactionHistory")]
         public async Task<IActionResult> GetTransactionHistory()
         {
@@ -107,6 +110,7 @@ namespace APINineTranslation.Controllers
             return Ok(transactions);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTransactionById/{id}")]
         public async Task<IActionResult> GetTransactionById(int id)
         {

@@ -1,4 +1,5 @@
 ﻿using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using ViewModels;
@@ -16,6 +17,7 @@ namespace APINineTranslation.Controllers
             _patchService = patchService;
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("createPatchUpdate")]
         public async Task<IActionResult> CreatePatchUpdateAsync([FromBody] IEnumerable<CreatePatchUpdateDto> patchDto)
         {
@@ -34,6 +36,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("upsertPatchUpdate/{projectDetailId}")]
         public async Task<IActionResult> SmartUpdatePatchAsync(int projectDetailId, [FromBody] IEnumerable<UpdatePatchUpdateDto> patchUpdates)
         {

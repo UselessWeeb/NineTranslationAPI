@@ -1,4 +1,5 @@
 ﻿using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using ViewModels;
@@ -15,6 +16,7 @@ namespace APINineTranslation.Controllers
             _projectStaffService = projectStaffService;
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("addStaff")]
         public async Task<IActionResult> AddStaff([FromBody] IEnumerable<CreateProjectStaffDto> newStaff)
         {
@@ -33,6 +35,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost("upsertStaff/{projectId}")]
         public async Task<IActionResult> SmartUpdateStaff(int projectId, [FromBody] IEnumerable<UpdateProjectStaffDto> staffUpdates)
         {
