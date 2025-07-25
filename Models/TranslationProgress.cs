@@ -8,13 +8,13 @@ namespace Models
         public int Id { get; set; }
 
         [Range(0, 100)]
-        public decimal Translate { get; set; }
+        public decimal? Translate { get; set; }
 
         [Range(0, 100)]
-        public decimal Edit { get; set; }
+        public decimal? Edit { get; set; }
 
         [Range(0, 100)]
-        public decimal QA { get; set; }
+        public decimal? QA { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
