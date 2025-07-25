@@ -15,11 +15,13 @@ namespace Services.Services
     public class PatchService : IPatchService
     {
         private readonly IRepository<PatchUpdate> _patchRepository;
+        private readonly IRepository<ProjectDetail> _projectDetailRepository;
         private readonly IMapper _mapper;
 
-        public PatchService(IRepository<PatchUpdate> patchRepository, IMapper mapper)
+        public PatchService(IRepository<PatchUpdate> patchRepository, IRepository<ProjectDetail> projectDetailRepository, IMapper mapper)
         {
             _patchRepository = patchRepository;
+            _projectDetailRepository = projectDetailRepository;
             _mapper = mapper;
         }
 
@@ -38,34 +40,21 @@ namespace Services.Services
 
         public async Task SmartUpdatePatchAsync(int projectDetailId, IEnumerable<UpdatePatchUpdateDto> patchUpdates)
         {
+            // Remove all existing patches for the project detail and recreate them
+            var existingPatches = await _patchRepository.FindAsync(p => p.ProjectDetailId == projectDetailId);
+            if (existingPatches.Any())
+            {
+                await _patchRepository.RemoveRangeAsync(existingPatches);
+            }
             if (patchUpdates == null || !patchUpdates.Any())
             {
                 throw new ArgumentException("Patch updates cannot be null or empty.", nameof(patchUpdates));
             }
-
-            var existingPatches = (await _patchRepository.FindAsync(p => p.ProjectDetailId == projectDetailId)).ToList();
-
-            var updatesDict = patchUpdates.ToDictionary(u => u.Id);
-            var existingDict = existingPatches.ToDictionary(p => p.Id);
-
-            foreach (var patchUpdate in patchUpdates)
+            var newPatches = _mapper.Map<IEnumerable<PatchUpdate>>(patchUpdates);
+            foreach (var patch in newPatches)
             {
-                if (existingDict.TryGetValue(patchUpdate.Id ?? 0, out var existingPatch))
-                {
-                    _mapper.Map(patchUpdate, existingPatch);
-                    await _patchRepository.UpdateAsync(existingPatch);
-                }
-                else
-                {
-                    var newPatch = _mapper.Map<PatchUpdate>(patchUpdate);
-                    newPatch.ProjectDetailId = projectDetailId;
-                    await _patchRepository.AddAsync(newPatch);
-                }
-            }
-            var patchesToRemove = existingPatches.Where(p => !updatesDict.ContainsKey(p.Id)).ToList();
-            foreach (var patch in patchesToRemove)
-            {
-                await _patchRepository.RemoveAsync(patch);
+                patch.ProjectDetailId = projectDetailId;
+                await _patchRepository.AddAsync(patch);
             }
         }
     }

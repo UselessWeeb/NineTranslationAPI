@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Dto
 {
-    public class UpdateProjectStaffDto
+    public class ProjectStaffDto
     {
+        public int Id { get; set; }
+        public int ProjectDetailId { get; set; }
         public string? UserId { get; set; }
         public StaffRoleType Role { get; set; }
     }

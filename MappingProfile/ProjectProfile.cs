@@ -22,11 +22,14 @@ namespace MappingProfile
                 .ForMember(dest => dest.LastUpdated, otp => otp.MapFrom(src => src.LastUpdated.ToString("dddd, dd/MM/yyyy", vietnameseCulture)));
 
             CreateMap<ProjectDetail, ProjectDetailDto>()
+                .ForMember(dest => dest.LinkedStaff, opt => opt.MapFrom(src => src.StaffRoles))
                 .ForMember(dest => dest.ReleaseDate, otp => otp.MapFrom(src => src.ReleaseDate.ToString("dddd, dd/MM/yyyy", vietnameseCulture)))
                 .ForMember(dest => dest.Staff, opt => opt.MapFrom(src => src.StaffRoles));
 
             CreateMap<IEnumerable<ProjectStaff>, StaffDto>()
                 .ConvertUsing<ProjectStaffToViewModelConverter>();
+
+            CreateMap<ProjectStaff, ProjectStaffDto>();
 
             CreateMap<DownloadDetail, DownloadDetailDto>();
             CreateMap<PatchUpdate, PatchUpdateDto>()

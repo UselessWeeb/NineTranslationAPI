@@ -1,4 +1,6 @@
-﻿namespace ViewModels
+﻿using Dto;
+
+namespace ViewModels
 {
     public class ProjectDetailDto
     {
@@ -10,6 +12,7 @@
         public string OfficialPage { get; set; }
         public string FullDescription { get; set; }
         public StaffDto? Staff { get; set; }
+        public ICollection<ProjectStaffDto>? LinkedStaff { get; set; }
         public DownloadDetailDto DownloadDetail { get; set; }
         public List<PatchUpdateDto> PatchHistory { get; set; }
         public string PatchSize { get; set; }
