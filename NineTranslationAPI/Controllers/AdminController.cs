@@ -9,6 +9,8 @@ using ViewModels;
 
 namespace APINineTranslation.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AdminController : Controller
     {
         private readonly SignInManager<User> _signInManager;

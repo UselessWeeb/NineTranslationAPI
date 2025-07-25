@@ -15,9 +15,9 @@ namespace Services.Interfaces
         Task<IEnumerable<ProjectDto>> GetSortedNineListPartnerAsync();
         Task<ProjectDto> GetProjectByFinderAsync(string finder);
         Task<IEnumerable<ProjectDto>> GetProjectByNameAsync(string name);
-        Task CreateProjectAsync(CreateProjectDto project);
+        Task<int> CreateProjectAsync(CreateProjectDto project);
         Task SetCarouselAsync(int a, int b, int c);
-        Task UpdateProjectAsync(UpdateProjectDto project);
+        Task<int> UpdateProjectAsync(UpdateProjectDto project);
         Task DeleteProjectById(int id);
         Task DeleteProjectByFinderAsync(string finder);
         Task DisableProjectAsync(string finder);

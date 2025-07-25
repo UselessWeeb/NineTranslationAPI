@@ -122,7 +122,7 @@ namespace Services.Services
             return _mapper.Map<IEnumerable<ProjectDto>>(projectList);
         }
 
-        public async Task CreateProjectAsync(CreateProjectDto projectDto)
+        public async Task<int> CreateProjectAsync(CreateProjectDto projectDto)
         {
             var project = _mapper.Map<Project>(projectDto);
 
@@ -136,6 +136,7 @@ namespace Services.Services
             }
 
             await _projectRepository.AddAsync(project);
+            return project.Detail.Id;
         }
 
         public async Task SetCarouselAsync(int a, int b, int c)
@@ -183,7 +184,7 @@ namespace Services.Services
             }
         }
 
-        public async Task UpdateProjectAsync(UpdateProjectDto project)
+        public async Task<int> UpdateProjectAsync(UpdateProjectDto project)
         {
             var existingProjects = await _projectRepository.FindAsync(p => p.Id == project.Id);
             var existingProject = existingProjects.FirstOrDefault();
@@ -202,6 +203,7 @@ namespace Services.Services
             }
 
             await _projectRepository.UpdateAsync(existingProject);
+            return existingProject.Detail.Id;
         }
 
 

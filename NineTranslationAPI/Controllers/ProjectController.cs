@@ -107,8 +107,8 @@ namespace APINineTranslation.Controllers
             }
             try
             {
-                await _projectService.CreateProjectAsync(project);
-                return Ok();
+                int detailId = await _projectService.CreateProjectAsync(project);
+                return Ok(detailId);
             }
             catch (DbUpdateException dbEx)
             {
@@ -129,8 +129,8 @@ namespace APINineTranslation.Controllers
             }
             try
             {
-                await _projectService.UpdateProjectAsync(project);
-                return Ok();
+                int detailId = await _projectService.UpdateProjectAsync(project);
+                return Ok(detailId);
             }
             catch (Exception ex)
             {
