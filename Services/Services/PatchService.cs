@@ -15,14 +15,16 @@ namespace Services.Services
     public class PatchService : IPatchService
     {
         private readonly IRepository<PatchUpdate> _patchRepository;
+        private readonly IRepository<Project> _project;
         private readonly IRepository<ProjectDetail> _projectDetailRepository;
         private readonly IMapper _mapper;
 
-        public PatchService(IRepository<PatchUpdate> patchRepository, IRepository<ProjectDetail> projectDetailRepository, IMapper mapper)
+        public PatchService(IRepository<PatchUpdate> patchRepository, IRepository<ProjectDetail> projectDetailRepository, IMapper mapper, IRepository<Project> project)
         {
             _patchRepository = patchRepository;
             _projectDetailRepository = projectDetailRepository;
             _mapper = mapper;
+            _project = project;
         }
 
         public async Task AddPatchListAsync(IEnumerable<CreatePatchUpdateDto> patchUpdateDto)
@@ -38,10 +40,15 @@ namespace Services.Services
             }
         }
 
-        public async Task SmartUpdatePatchAsync(int projectDetailId, IEnumerable<UpdatePatchUpdateDto> patchUpdates)
+        public async Task SmartUpdatePatchAsync(int projectId, IEnumerable<UpdatePatchUpdateDto> patchUpdates)
         {
-            // Remove all existing patches for the project detail and recreate them
-            var existingPatches = await _patchRepository.FindAsync(p => p.ProjectDetailId == projectDetailId);
+            var project = await _project.GetByIdAsync(projectId);
+            if (project == null)
+            {
+                throw new KeyNotFoundException($"Project with ID {projectId} not found.");
+            }
+            var projectDetail = project.Detail;
+            var existingPatches = projectDetail.PatchHistory?.ToList() ?? new List<PatchUpdate>();
             if (existingPatches.Any())
             {
                 await _patchRepository.RemoveRangeAsync(existingPatches);
@@ -53,7 +60,6 @@ namespace Services.Services
             var newPatches = _mapper.Map<IEnumerable<PatchUpdate>>(patchUpdates);
             foreach (var patch in newPatches)
             {
-                patch.ProjectDetailId = projectDetailId;
                 await _patchRepository.AddAsync(patch);
             }
         }

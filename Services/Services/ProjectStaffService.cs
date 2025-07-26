@@ -14,12 +14,14 @@ namespace Services.Services
 {
     public class ProjectStaffService : IProjectStaffService
     {
+        private readonly IRepository<Project> _projectRepository;
         private readonly IRepository<ProjectStaff> _projectStaffRepository;
         private readonly IRepository<ProjectDetail> _projectDetailRepository;
         private readonly IMapper _mapper;
 
-        public ProjectStaffService(IRepository<ProjectStaff> projectStaffRepository, IRepository<ProjectDetail> projectDetailRepository, IMapper mapper)
+        public ProjectStaffService(IRepository<Project> projectRepository, IRepository<ProjectStaff> projectStaffRepository, IRepository<ProjectDetail> projectDetailRepository, IMapper mapper)
         {
+            _projectRepository = projectRepository;
             _projectStaffRepository = projectStaffRepository;
             _projectDetailRepository = projectDetailRepository;
             _mapper = mapper;
@@ -38,12 +40,13 @@ namespace Services.Services
         public async Task SmartUpdateAsync(int projectId, IEnumerable<UpdateProjectStaffDto> staffUpdates)
         {
             //simply just remove all belong to the project then recreate it
-            var projectStaffs = await _projectDetailRepository.GetByIdAsync(projectId);
-            if (projectStaffs == null)
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null)
             {
                 throw new KeyNotFoundException($"Project with ID {projectId} not found.");
             }
-            var existingStaff = projectStaffs.StaffRoles.ToList();
+            var projectDetail = project.Detail;
+            var existingStaff = projectDetail.StaffRoles?.ToList() ?? new List<ProjectStaff>();
             if (existingStaff.Any())
             {
                 await _projectStaffRepository.RemoveRangeAsync(existingStaff);

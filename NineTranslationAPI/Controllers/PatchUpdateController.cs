@@ -36,9 +36,9 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [Authorize(Roles = "Staff,Admin")]
-        [HttpPost("upsertPatchUpdate/{projectDetailId}")]
-        public async Task<IActionResult> SmartUpdatePatchAsync(int projectDetailId, [FromBody] IEnumerable<UpdatePatchUpdateDto> patchUpdates)
+        //[Authorize(Roles = "Staff,Admin")]
+        [HttpPost("upsertPatchUpdate/{projectId}")]
+        public async Task<IActionResult> SmartUpdatePatchAsync(int projectId, [FromBody] IEnumerable<UpdatePatchUpdateDto> patchUpdates)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace APINineTranslation.Controllers
                 {
                     return BadRequest("Patch updates cannot be null or empty.");
                 }
-                await _patchService.SmartUpdatePatchAsync(projectDetailId, patchUpdates);
+                await _patchService.SmartUpdatePatchAsync(projectId, patchUpdates);
                 return Ok();
             }
             catch (Exception ex)

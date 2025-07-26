@@ -11,6 +11,6 @@ namespace Services.Interfaces
     public interface IPatchService
     {
         Task AddPatchListAsync(IEnumerable<CreatePatchUpdateDto> patchUpdateDto);
-        Task SmartUpdatePatchAsync(int projectDetailId, IEnumerable<UpdatePatchUpdateDto> patchUpdates);
+        Task SmartUpdatePatchAsync(int projectId, IEnumerable<UpdatePatchUpdateDto> patchUpdates);
     }
 }
