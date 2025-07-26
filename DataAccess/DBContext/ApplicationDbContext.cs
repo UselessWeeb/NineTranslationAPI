@@ -22,9 +22,6 @@ namespace DataAccess.DBContext
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ProjectStaff>()
-                .HasKey(ps => new { ps.Id, ps.UserId, ps.Role });
-
-            modelBuilder.Entity<ProjectStaff>()
                 .HasOne(ps => ps.ProjectDetail)
                 .WithMany(pd => pd.StaffRoles)
                 .HasForeignKey(ps => ps.ProjectDetailId);

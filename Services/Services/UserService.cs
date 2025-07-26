@@ -48,11 +48,9 @@ namespace Services.Services
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                if (roles.Contains("Staff"))
-                {
-                    var viewModel = MapToViewModel(user);
-                    staffUsers.Add(viewModel);
-                }
+                var viewModel = MapToViewModel(user);
+                viewModel.Roles = roles;
+                staffUsers.Add(viewModel);
             }
 
             return staffUsers;
