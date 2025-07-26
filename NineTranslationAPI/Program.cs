@@ -73,6 +73,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+builder.Services.AddScoped<IPasswordTokenService, PasswordTokenService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
