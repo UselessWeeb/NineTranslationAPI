@@ -25,7 +25,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetCarouselProjectsAsync()
         {
             var projects = await _projectRepository.FindAsync(p =>
-                (p.Type == "project" || p.Type == "partner") && p.isCarousel && p.isActive);
+                p.Type == "project" && p.isCarousel && p.isActive);
 
             return MapToViewModel(projects.OrderByDescending(p => p.Id).ToList());
         }
@@ -34,7 +34,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => (p.Type == "project" || p.Type == "partner") && p.isActive)
+                .Where(p => p.Type == "project" && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
@@ -43,7 +43,7 @@ namespace Services.Services
         public async Task<IEnumerable<ProjectDto>> GetRandomThreeProjectsAsync()
         {
             var projects = (await _projectRepository.GetAllAsync())
-                .Where(p => (p.Type == "project" || p.Type == "partner" || p.Type == "post") && p.isActive)
+                .Where(p => (p.Type == "project" || p.Type == "post") && p.isActive)
                 .ToList();
 
             return GetRandomProjects(projects, 3);
@@ -93,7 +93,7 @@ namespace Services.Services
         {
             var random = new Random();
             var projectList = projects
-                .Where(p => p.isActive && (p.Type == "project" || p.Type == "partner"))
+                .Where(p => p.isActive && p.Type == "project")
                 .OrderBy(x => random.Next())
                 .Take(count);
 
