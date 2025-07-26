@@ -88,7 +88,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        //[Authorize(Roles = "Staff,Admin")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getAllProject")]
         public async Task<IActionResult> GetAllProjects()
         {
