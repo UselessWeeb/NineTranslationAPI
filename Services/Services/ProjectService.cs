@@ -36,7 +36,7 @@ namespace Services.Services
             return MapToViewModel(projects
                 .Where(p => p.Type == "project" && p.isActive)
                 .OrderByDescending(p => p.Id)
-                .Take(9)
+                .Take(6)
                 .ToList());
         }
 
@@ -83,7 +83,7 @@ namespace Services.Services
         {
             var projects = await _projectRepository.GetAllAsync();
             return MapToViewModel(projects
-                .Where(p => p.By != "Nine Translation" && !string.IsNullOrEmpty(p.Status) && p.isActive)
+                .Where(p => p.Type == "project" && p.By != "Nine Translation" && !string.IsNullOrEmpty(p.Status) && p.isActive)
                 .OrderByDescending(p => p.Id)
                 .Take(9)
                 .ToList());
