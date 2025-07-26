@@ -56,6 +56,19 @@ namespace Services.Services
             return staffUsers;
         }
 
+        public Task<UserDto> GetStaffByIdAsync(string id)
+        {
+            var user = _userRepository.FindAsync(u => u.Id == id).Result.FirstOrDefault();
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found.");
+            }
+            var roles = _userManager.GetRolesAsync(user).Result;
+            var viewModel = MapToViewModel(user);
+            viewModel.Roles = roles;
+            return Task.FromResult(viewModel);
+        }
+
         private UserDto MapToViewModel(User u)
         {
             return _mapper.Map<UserDto>(u);

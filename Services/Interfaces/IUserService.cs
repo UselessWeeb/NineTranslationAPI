@@ -11,6 +11,7 @@ namespace Services.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserDto>> GetAllStaffAsync();
+        Task<UserDto> GetStaffByIdAsync(string id);
         Task<IdentityResult> CreateUserAsync(CreateUserDto model);
     }
 }

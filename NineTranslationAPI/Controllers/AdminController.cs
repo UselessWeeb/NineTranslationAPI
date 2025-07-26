@@ -43,7 +43,7 @@ namespace APINineTranslation.Controllers
             _mapper = mapper;
         }
 
-        //[Authorize(Roles = "Staff,Admin")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getStaff")]
         public async Task<IActionResult> GetAllStaff()
         {
@@ -51,6 +51,25 @@ namespace APINineTranslation.Controllers
             {
                 var users = await _userService.GetAllStaffAsync();
                 return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [Authorize(Roles = "Staff,Admin")]
+        [HttpGet("getStaffById/{id}")]
+        public async Task<IActionResult> GetStaffById(string id)
+        {
+            try
+            {
+                var user = await _userService.GetStaffByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -70,7 +89,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateAccount")]
         public async Task<IActionResult> UpdateAccount([FromForm] UpdateUserDto model)
         {
@@ -100,7 +119,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(updateResult.Errors);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("disableUser")]
         public async Task<IActionResult> DisableUser([FromBody] string userId)
         {
@@ -118,7 +137,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        //[Authorize(Roles = "Staff,Admin")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getAllProject")]
         public async Task<IActionResult> GetAllProjects()
         {
