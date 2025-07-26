@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Models;
+using Services.Interfaces;
+using Services.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,15 +18,21 @@ namespace APINineTranslation.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly IPasswordTokenService _passwordTokenService;
+        private readonly IEmailService _emailService;
         private readonly IConfiguration _config;
 
         public LoginController(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
+            IPasswordTokenService passwordTokenService,
+            IEmailService emailService,
             IConfiguration config)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _passwordTokenService = passwordTokenService;
+            _emailService = emailService;
             _config = config;
         }
 
@@ -66,6 +75,59 @@ namespace APINineTranslation.Controllers
             }
 
             return Unauthorized();
+        }
+
+        [Authorize(Roles = "Staff,Admin")]
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePasswordById([FromBody] ChangePasswordDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var result = await _passwordTokenService.CreatePasswordTokenAsync(user.Id, model.NewPassword);
+            if (result != null)
+            {
+                string subject = "Password Reset";
+                string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "PasswordReset.html");
+                string body = await System.IO.File.ReadAllTextAsync(templatePath);
+
+                body = body.Replace("{{FullName}}", user.DisplayName)
+                           .Replace("{{Token}}", result);
+
+                await _emailService.SendEmailAsync(user.Email, subject, body);
+                return Ok("Password change token created successfully.");
+            }
+            return BadRequest();
+        }
+
+        [HttpPost("authenticateToken")]
+        public async Task<IActionResult> AuthenticateToken([FromBody] AuthenticateTokenDto model)
+        {
+            var isValid = await _passwordTokenService.IsTokenValidAsync(model.Token);
+            if (!isValid)
+                return Unauthorized("Invalid or expired token.");
+
+            var userId = await _passwordTokenService.GetUserIdFromTokenAsync(model.Token);
+            if (userId == null)
+                return NotFound("User not found.");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded)
+                return BadRequest(removeResult.Errors);
+
+            var addResult = await _userManager.AddPasswordAsync(user, model.Token);
+            if (!addResult.Succeeded)
+                return BadRequest(addResult.Errors);
+
+            await _passwordTokenService.MarkTokenAsUsedAsync(model.Token);
+            return Ok("Password changed successfully.");
         }
     }
 }

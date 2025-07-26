@@ -36,7 +36,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [Authorize(Roles = "Staff,Admin")]
+        //[Authorize(Roles = "Staff,Admin")]
         [HttpPost("upsertPatchUpdate/{projectId}")]
         public async Task<IActionResult> SmartUpdatePatchAsync(int projectId, [FromBody] IEnumerable<UpdatePatchUpdateDto> patchUpdates)
         {

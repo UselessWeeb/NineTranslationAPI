@@ -43,7 +43,7 @@ namespace APINineTranslation.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Staff,Admin")]
+        //[Authorize(Roles = "Staff,Admin")]
         [HttpGet("getStaff")]
         public async Task<IActionResult> GetAllStaff()
         {
@@ -70,7 +70,37 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [HttpPost("updateAccount")]
+        public async Task<IActionResult> UpdateAccount([FromForm] UpdateUserDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            user.DisplayName = model.DisplayName;
+            user.Email = model.Email;
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (updateResult.Succeeded)
+            {
+                //var passwordCheck = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+                //if (!passwordCheck)
+                //{
+                //    return BadRequest("Incorrect old password.");
+                //}
+                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (!passwordChangeResult.Succeeded)
+                {
+                    return BadRequest(passwordChangeResult.Errors);
+                }
+                return Ok("User updated successfully.");
+            }
+            return BadRequest(updateResult.Errors);
+        }
+
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("disableUser")]
         public async Task<IActionResult> DisableUser([FromBody] string userId)
         {
@@ -88,7 +118,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        [Authorize(Roles = "Staff,Admin")]
+        //[Authorize(Roles = "Staff,Admin")]
         [HttpGet("getAllProject")]
         public async Task<IActionResult> GetAllProjects()
         {
