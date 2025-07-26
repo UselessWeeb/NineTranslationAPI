@@ -129,5 +129,14 @@ namespace APINineTranslation.Controllers
             await _passwordTokenService.MarkTokenAsUsedAsync(model.Token);
             return Ok("Password changed successfully.");
         }
+
+        [Authorize(Roles = "Staff,Admin")]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _signInManager.SignOutAsync();
+            return Ok("Logged out successfully.");
+        }
     }
 }

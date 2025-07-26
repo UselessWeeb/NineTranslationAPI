@@ -109,11 +109,13 @@ namespace APINineTranslation.Controllers
                 //{
                 //    return BadRequest("Incorrect old password.");
                 //}
-                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-                if (!passwordChangeResult.Succeeded)
-                {
-                    return BadRequest(passwordChangeResult.Errors);
-                }
+                var removeResult = await _userManager.RemovePasswordAsync(user);
+                if (!removeResult.Succeeded)
+                    return BadRequest(removeResult.Errors);
+
+                var addResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
+                if (!addResult.Succeeded)
+                    return BadRequest(addResult.Errors);
                 return Ok("User updated successfully.");
             }
             return BadRequest(updateResult.Errors);
