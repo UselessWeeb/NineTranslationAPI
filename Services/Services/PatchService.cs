@@ -60,6 +60,7 @@ namespace Services.Services
             var newPatches = _mapper.Map<IEnumerable<PatchUpdate>>(patchUpdates);
             foreach (var patch in newPatches)
             {
+                patch.ProjectDetailId = projectDetail.Id;
                 await _patchRepository.AddAsync(patch);
             }
         }

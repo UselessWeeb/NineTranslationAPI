@@ -58,7 +58,7 @@ namespace Services.Services
             var newStaff = _mapper.Map<IEnumerable<ProjectStaff>>(staffUpdates);
             foreach (var staff in newStaff)
             {
-                staff.ProjectDetailId = projectId;
+                staff.ProjectDetailId = projectDetail.Id;
             }
             await _projectStaffRepository.AddRangeAsync(newStaff);
         }
