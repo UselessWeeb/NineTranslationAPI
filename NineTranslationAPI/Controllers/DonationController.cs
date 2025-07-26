@@ -88,7 +88,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Staff, Admin")]
         [HttpGet("GetTransactionGraph/{month}")]
         public async Task<IActionResult> GetTransactionGraph(int month)
         {
@@ -100,7 +100,7 @@ namespace APINineTranslation.Controllers
             return Ok(transactions);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Staff, Admin")]
         [HttpGet("GetTransactionHistory")]
         public async Task<IActionResult> GetTransactionHistory()
         {
@@ -110,7 +110,7 @@ namespace APINineTranslation.Controllers
             return Ok(transactions);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Staff, Admin")]
         [HttpGet("GetTransactionById/{id}")]
         public async Task<IActionResult> GetTransactionById(int id)
         {

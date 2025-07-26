@@ -43,7 +43,7 @@ namespace APINineTranslation.Controllers
             _mapper = mapper;
         }
 
-        //[Authorize(Roles = "Staff,Admin")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpGet("getStaff")]
         public async Task<IActionResult> GetAllStaff()
         {
@@ -77,6 +77,7 @@ namespace APINineTranslation.Controllers
             }
         }
 
+
         [Authorize(Roles = "Admin")]
         [HttpPost("addAccount")]
         public async Task<IActionResult> AddAccount([FromForm] CreateUserDto model)
@@ -89,7 +90,7 @@ namespace APINineTranslation.Controllers
             return BadRequest(result.Errors);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateAccount")]
         public async Task<IActionResult> UpdateAccount([FromForm] UpdateUserDto model)
         {
